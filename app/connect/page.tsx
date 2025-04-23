@@ -48,9 +48,9 @@ export default function ConnectPage() {
                 <Wallet className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-medium">Earn Real Tokens</h3>
+                <h3 className="font-medium">Earn Real Rewards</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Complete quizzes to earn tokens on Monad chain
+                  Complete quizzes to earn Rewards on Monad chain
                 </p>
               </div>
             </div>

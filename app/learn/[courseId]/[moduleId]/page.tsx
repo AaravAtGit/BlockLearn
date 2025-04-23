@@ -3,10 +3,32 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, ArrowRight, BookOpen, Video, FileText } from "lucide-react"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+interface Resource {
+  title: string;
+  url: string;
+}
+
+interface LessonContent {
+  id: number;
+  title: string;
+  content: string;
+  resources: Resource[];
+}
+
+interface ModuleData {
+  title: string;
+  description: string;
+  currentLesson: number;
+  totalLessons: number;
+  lessons: LessonContent[];
+}
 
 export default function ModulePage({ params }: { params: { moduleId: string } }) {
-  // This would come from a database in a real application
-  const moduleContent = {
+  // Mock data - in a real app this would come from an API or database
+  const moduleContent: ModuleData = {
     title: "Blockchain Fundamentals",
     description: "Understanding the core concepts of blockchain technology",
     currentLesson: 1,
@@ -16,23 +38,69 @@ export default function ModulePage({ params }: { params: { moduleId: string } })
         id: 1,
         title: "What is Blockchain?",
         content: `
-          <h2>Introduction to Blockchain Technology</h2>
-          <p>A blockchain is a distributed database or ledger that is shared among the nodes of a computer network. As a database, a blockchain stores information electronically in digital format.</p>
-          
-          <p>Blockchains are best known for their crucial role in cryptocurrency systems, such as Bitcoin, for maintaining a secure and decentralized record of transactions. The innovation with a blockchain is that it guarantees the fidelity and security of a record of data and generates trust without the need for a trusted third party.</p>
-          
-          <h3>Key Characteristics of Blockchain:</h3>
-          <ul>
-            <li><strong>Decentralization:</strong> No single entity has control over the entire network</li>
-            <li><strong>Transparency:</strong> All transactions are visible to anyone on the network</li>
-            <li><strong>Immutability:</strong> Once data is recorded, it cannot be altered</li>
-            <li><strong>Security:</strong> Cryptographic principles ensure data integrity</li>
-          </ul>
-          
-          <p>In the next lesson, we'll explore how blocks are created and linked together to form the blockchain.</p>
+# Introduction to Blockchain Technology
+
+A blockchain is a distributed database or ledger shared among computer network nodes. As a database, a blockchain stores information electronically in digital format.
+
+## Key Characteristics
+
+- **Decentralized**: No central authority controls the network
+- **Transparent**: All transactions are visible to participants
+- **Immutable**: Once recorded, data cannot be changed
+- **Secure**: Protected by cryptographic principles
+
+## Technical Components
+
+\`\`\`typescript
+interface Block {
+  index: number;
+  timestamp: number;
+  data: any[];
+  previousHash: string;
+  hash: string;
+  nonce: number;
+}
+\`\`\`
+
+### How Blocks Connect
+
+1. Each block contains:
+   - Transaction data
+   - Timestamp
+   - Hash of previous block
+   - Own hash
+
+2. Hash Calculation
+\`\`\`typescript
+calculateHash(block: Block): string {
+  return sha256(
+    block.index +
+    block.timestamp +
+    JSON.stringify(block.data) +
+    block.previousHash +
+    block.nonce
+  );
+}
+\`\`\`
+
+Learn more about blockchain architecture in the next section.
         `,
-      },
-    ],
+        resources: [
+          {
+            title: "Blockchain Whitepaper",
+            url: "https://example.com/blockchain-whitepaper"
+          },
+          {
+            title: "Technical Documentation",
+            url: "https://example.com/docs"
+          },
+          {
+            title: "Developer Guide",
+            url: "https://example.com/guide"
+          }
+        ]
+      }
+    ]
   }
 
   const currentLesson = moduleContent.lessons[0]
@@ -77,10 +145,11 @@ export default function ModulePage({ params }: { params: { moduleId: string } })
               </TabsTrigger>
             </TabsList>
             <TabsContent value="read">
-              <div
-                className="prose max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: currentLesson.content }}
-              />
+              <div className="prose max-w-none dark:prose-invert">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {currentLesson.content}
+                </ReactMarkdown>
+              </div>
             </TabsContent>
             <TabsContent value="watch">
               <div className="aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -93,21 +162,18 @@ export default function ModulePage({ params }: { params: { moduleId: string } })
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Additional Resources</h3>
                 <ul className="space-y-2">
-                  <li>
-                    <a href="#" className="text-blue-600 hover:underline dark:text-blue-400">
-                      Blockchain Technology Whitepaper
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="text-blue-600 hover:underline dark:text-blue-400">
-                      History of Blockchain Development
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="text-blue-600 hover:underline dark:text-blue-400">
-                      Blockchain Use Cases Beyond Cryptocurrency
-                    </a>
-                  </li>
+                  {currentLesson.resources.map((resource, index) => (
+                    <li key={index}>
+                      <a 
+                        href={resource.url}
+                        className="text-blue-600 hover:underline dark:text-blue-400"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {resource.title}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </TabsContent>

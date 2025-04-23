@@ -29,9 +29,9 @@ export function Navigation() {
       icon: <BarChart3 className="h-5 w-5" />,
     },
     {
-      name: "Rewards",
-      path: "/rewards",
-      icon: <Award className="h-5 w-5" />,
+      name: "Profile",
+      path: "/profile",
+      icon: <User className="h-5 w-5" />,
     },
   ]
 
@@ -81,17 +81,11 @@ export function Navigation() {
         </nav>
         <div className="flex items-center gap-2">
           {isConnected ? (
-            <>
-              <Button variant="outline" size="sm" className="hidden items-center gap-1 md:flex">
-                <Wallet className="h-4 w-4" />
-                <span>50 Tokens</span>
+            <Link href="/profile">
+              <Button variant="outline" size="icon">
+                <User className="h-4 w-4" />
               </Button>
-              <Link href="/profile">
-                <Button variant="outline" size="icon">
-                  <User className="h-4 w-4" />
-                </Button>
-              </Link>
-            </>
+            </Link>
           ) : (
             <ConnectButton />
           )}

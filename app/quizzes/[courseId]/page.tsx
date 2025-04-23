@@ -17,7 +17,8 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
   const [showResults, setShowResults] = useState(false)
-  const [earnedTokens, setEarnedTokens] = useState(0)
+  const [hasPassedQuiz, setHasPassedQuiz] = useState(false)
+  const [isClaiming, setIsClaiming] = useState(false)
 
   // Get quiz data based on course ID
   const quiz = getQuizData(params.courseId)
@@ -38,10 +39,26 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
         (answer, index) => answer === quiz.questions[index].correctAnswer,
       ).length
 
-      // Calculate tokens earned (10 tokens per correct answer)
-      const tokens = correctAnswers * 10
-      setEarnedTokens(tokens)
+      // Calculate score percentage
+      const scorePercentage = (correctAnswers / quiz.questions.length) * 100
+      setHasPassedQuiz(scorePercentage >= 70)
       setShowResults(true)
+    }
+  }
+
+  const handleClaimNFT = async () => {
+    setIsClaiming(true)
+    try {
+      // Here you would integrate with your NFT minting contract
+      // For now we'll just simulate a delay
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      alert("NFT claimed successfully!")
+      router.push("/")
+    } catch (error) {
+      console.error("Failed to claim NFT:", error)
+      alert("Failed to claim NFT. Please try again.")
+    } finally {
+      setIsClaiming(false)
     }
   }
 
@@ -131,7 +148,7 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
           <CardContent>
             <div className="mb-6 text-center">
               <div className="mb-4 flex justify-center">
-                {earnedTokens >= 30 ? (
+                {hasPassedQuiz ? (
                   <CheckCircle className="h-16 w-16 text-green-500" />
                 ) : (
                   <AlertCircle className="h-16 w-16 text-amber-500" />
@@ -142,28 +159,33 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
                 of {quiz.questions.length} correct
               </h3>
               <p className="text-gray-500">
-                {earnedTokens >= 30
-                  ? "Great job! You've demonstrated a solid understanding of the concepts."
-                  : "You're making progress! Review the material and try again to improve your score."}
+                {hasPassedQuiz
+                  ? "Congratulations! You've passed the quiz and earned an NFT badge!"
+                  : "You need 70% or higher to pass. Review the material and try again."}
               </p>
             </div>
 
-            <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
-              <div className="mb-4 text-center">
-                <h4 className="text-xl font-medium">Rewards Earned</h4>
-                <div className="mt-2 text-3xl font-bold text-green-600 dark:text-green-500">
-                  {earnedTokens} BlockTokens
+            {hasPassedQuiz && (
+              <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+                <div className="mb-4 text-center">
+                  <h4 className="text-xl font-medium">Quiz Badge NFT</h4>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Claim your NFT badge to showcase your knowledge achievement
+                  </p>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  {earnedTokens} tokens have been added to your wallet on Monad chain
-                </p>
               </div>
-            </div>
+            )}
           </CardContent>
           <CardFooter>
-            <Button onClick={handleFinish} className="w-full">
-              View My Rewards
-            </Button>
+            {hasPassedQuiz ? (
+              <Button onClick={handleClaimNFT} className="w-full" disabled={isClaiming}>
+                {isClaiming ? "Claiming..." : "Claim NFT Badge"}
+              </Button>
+            ) : (
+              <Button onClick={() => router.push(`/courses/${params.courseId}`)} className="w-full">
+                Review Course Material
+              </Button>
+            )}
           </CardFooter>
         </Card>
       )}
