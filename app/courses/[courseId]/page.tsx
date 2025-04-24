@@ -233,7 +233,7 @@ export default function CoursePage({ params }: { params: { courseId: string } })
               <Link href={`/quizzes/${params.courseId}`}>
                 <Button>
                   Take Quiz
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />{/*  */}
                 </Button>
               </Link>
             ) : (
@@ -268,56 +268,105 @@ function getCourseData(courseId: string): Course {
             {
               title: "Introduction to DeFi",
               content: `
-# Introduction to Decentralized Finance (DeFi)
+# Exploring the DeFi Revolution
 
-Decentralized Finance (DeFi) represents a paradigm shift in financial services, leveraging blockchain technology to create an open, permissionless financial system.
+Decentralized Finance (DeFi) is transforming traditional financial services through blockchain technology, creating an open and accessible financial system for everyone.
 
-## What is DeFi?
+## The Evolution of Finance
 
-DeFi refers to a system of financial services and products built on blockchain networks, primarily Ethereum. Unlike traditional finance, DeFi:
+### Traditional Finance (TradFi)
+- Centralized control
+- Limited accessibility
+- Regular business hours
+- High fees and intermediaries
 
-- Operates without traditional intermediaries
-- Is accessible to anyone with an internet connection
-- Runs 24/7 without downtime
-- Is transparent and auditable
+### Decentralized Finance (DeFi)
+- Community governance
+- Global accessibility
+- 24/7 operation
+- Reduced costs through automation
 
-## Core Components
+## Key DeFi Sectors
 
-### 1. Smart Contracts
-Smart contracts form the backbone of DeFi applications, enabling:
-- Trustless execution of financial agreements
-- Automated market making
-- Lending and borrowing protocols
-- Yield generation
+### 1. Decentralized Exchanges (DEX)
+- Order book vs AMM models
+- Liquidity provision
+- Token swaps
+- Examples: Uniswap, Curve, Balancer
 
-### 2. Tokens
-Different types of tokens power the DeFi ecosystem:
-- **Governance tokens**: Enable participation in protocol decisions
-- **Liquidity tokens**: Represent shares in liquidity pools
-- **Wrapped tokens**: Allow cross-chain asset transfers
-- **Stablecoins**: Provide stability in volatile markets
+### 2. Lending and Borrowing
+- Overcollateralized loans
+- Flash loans
+- Interest rate dynamics
+- Examples: Aave, Compound
 
-## Key Innovations
+### 3. Yield Aggregators
+- Auto-compounding
+- Strategy vaults
+- Risk assessment
+- Examples: Yearn Finance, Convex
 
-1. **Automated Market Makers (AMMs)**
-   - Constant product formula
-   - Liquidity pools
-   - Price discovery mechanisms
+### 4. Synthetic Assets
+- Asset tokenization
+- Price oracles
+- Derivatives
+- Examples: Synthetix, Mirror Protocol
 
-2. **Money Legos**
-   - Composability between protocols
-   - Interconnected financial primitives
-   - Innovation through combination
+## DeFi Advantages
 
-3. **Yield Farming**
-   - Liquidity mining
-   - Protocol incentives
-   - Yield optimization strategies
-              `,
+1. **Transparency**
+   - Open-source code
+   - Verifiable transactions
+   - Public ledger
+   - Auditable protocols
+
+2. **Composability**
+   - Money legos concept
+   - Protocol integration
+   - Cross-platform compatibility
+   - Innovative combinations
+
+3. **Accessibility**
+   - No KYC requirements
+   - Self-custody
+   - Global participation
+   - Low minimum amounts
+
+## DeFi Ecosystem Metrics
+
+\`\`\`
+Total Value Locked (TVL) Growth:
+2020: $1B
+2021: $100B+
+2022: Market adjustments
+2023: Sustainable growth
+\`\`\`
+
+## Future Developments
+
+1. **Layer 2 Integration**
+   - Scaling solutions
+   - Lower fees
+   - Faster transactions
+   - Improved UX
+
+2. **Real-World Assets**
+   - Tokenized securities
+   - Property investments
+   - Supply chain finance
+   - Traditional asset bridging
+
+3. **Institutional Adoption**
+   - Regulatory frameworks
+   - Professional trading
+   - Portfolio integration
+   - Risk management
+`,
               resources: [
-                "DeFi Pulse - Analytics & Rankings",
-                "Ethereum DeFi Documentation",
-                "Smart Contract Development Guide"
+                "DeFi Pulse - Real-time DeFi Stats",
+                "DeFi Risk Framework Assessment",
+                "Understanding DeFi Composability",
+                "Layer 2 Scaling Solutions in DeFi"
               ]
             },
             {
@@ -782,153 +831,228 @@ Field: Prime field with p = 2²⁵⁶ - 2³² - 977
     },
     bitcoin: {
       title: "Bitcoin: Digital Gold",
-      description: "Understand Bitcoin's technology, economics, and impact",
+      description: "Deep dive into Bitcoin's protocol, economics, and mining",
       modules: [
         {
-          title: "Bitcoin Basics",
+          title: "Bitcoin Protocol",
           lessons: [
             {
-              title: "The Origin of Bitcoin",
+              title: "Bitcoin Network Architecture",
               content: `
-# The Origin of Bitcoin
+# Bitcoin Network Architecture
 
-Bitcoin emerged in the aftermath of the 2008 global financial crisis, during a time of significant distrust in traditional financial institutions. Its creation marked the beginning of a new era in financial technology.
+## Network Participants
 
-## The Genesis of Bitcoin
+### 1. Full Nodes
+- Complete blockchain validation
+- Transaction verification
+- Network security maintenance
+- P2P message relay
 
-### The Whitepaper
-On October 31, 2008, Satoshi Nakamoto published the revolutionary whitepaper:
-- "Bitcoin: A Peer-to-Peer Electronic Cash System"
-- Proposed solution to double-spending without intermediaries
-- Introduced proof-of-work consensus mechanism
-- Outlined the blockchain structure
+### 2. Mining Nodes
+- Block creation
+- Transaction selection
+- Proof of Work computation
+- Block propagation
 
-### Key Innovations
-1. **Decentralized Network**
-   - No central authority
-   - Peer-to-peer transactions
-   - Distributed consensus
+### 3. Light Clients (SPV)
+- Header-only verification
+- Merkle proof validation
+- Mobile wallet support
+- Resource efficiency
 
-2. **Proof of Work**
-   - Secures the network
-   - Creates digital scarcity
-   - Incentivizes honest participation
+## Transaction Flow
 
-## Historical Timeline
-
-### 2008-2009
-- **October 31, 2008:** Bitcoin whitepaper published
-- **January 3, 2009:** Genesis block mined
-- **January 12, 2009:** First Bitcoin transaction (Satoshi to Hal Finney)
-
-### 2010-2011
-- **May 22, 2010:** First real-world transaction (Bitcoin Pizza Day)
-- **April 2011:** Satoshi's last known communication
-
-## The Genesis Block
-\`\`\`
-Block 0 Message:
-"The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"
-\`\`\`
-
-This embedded message serves as both:
-- A timestamp proving the block's creation date
-- A commentary on the traditional banking system's failures
-              `,
-              resources: [
-                "Bitcoin Whitepaper by Satoshi Nakamoto",
-                "The Genesis Block Analysis",
-                "Early Bitcoin History Timeline"
-              ]
-            },
-            {
-              title: "Bitcoin Technical Architecture",
-              content: `
-# Bitcoin Technical Architecture
-
-## Transaction Structure
-
-### Basic Components
+### 1. Transaction Creation
 \`\`\`
 Transaction {
-  version: int
-  inputs: array[Input]
-  outputs: array[Output]
-  locktime: int
+    version: 2,
+    inputs: [
+        {prevTxId, index, scriptSig},
+        ...
+    ],
+    outputs: [
+        {amount, scriptPubKey},
+        ...
+    ],
+    locktime: 0
 }
 \`\`\`
 
-### UTXO Model
-1. **Unspent Transaction Outputs**
-   - Bitcoin's accounting system
-   - No account balances, only unspent outputs
-   - Each output can only be spent once
+### 2. Transaction Propagation
+- Initial broadcast to peers
+- Memory pool management
+- Fee-based prioritization
+- Replace-by-fee rules
 
-2. **Transaction Verification**
-   - Script-based validation
-   - Digital signatures
-   - Multi-signature support
+### 3. Block Inclusion
+- Transaction selection criteria
+- Fee market dynamics
+- Block size limits
+- Child-pays-for-parent
 
-## Network Architecture
+## Network Rules
 
-### Node Types
-1. **Full Nodes**
-   - Store complete blockchain
-   - Validate all transactions
-   - Relay transactions and blocks
+### 1. Consensus Rules
+- Block validation requirements
+- Transaction validity checks
+- Difficulty adjustments
+- Reward calculations
 
-2. **Mining Nodes**
-   - Compete to create new blocks
-   - Run specialized hardware
-   - Maintain network security
-
-3. **Light Clients**
-   - Store block headers only
-   - Use SPV for verification
-   - Mobile wallet support
-
-## Consensus Mechanism
-
-### Proof of Work
-\`\`\`
-Target Hash:
-0000000000000000000xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-\`\`\`
-
-#### Mining Process
-1. Collect transactions
-2. Create block header
-3. Increment nonce
-4. Check if hash meets difficulty
-5. Broadcast if successful
-
-### Difficulty Adjustment
-- Every 2,016 blocks (~2 weeks)
-- Targets 10-minute block time
-- Formula: New Difficulty = Old Difficulty * (Actual Time / Expected Time)
-
-## Security Model
-
-### Cryptographic Foundations
-1. **ECDSA**
-   - secp256k1 curve
-   - Public key derivation
-   - Transaction signing
-
-2. **Hash Functions**
-   - SHA-256 for PoW
-   - RIPEMD160 for addresses
-   - Hash linking in blockchain
-
-### Economic Incentives
-- Block rewards
-- Transaction fees
-- Game theory alignment
+### 2. P2P Protocol
+- Node discovery (DNS seeds)
+- Connection management
+- Message types
+- Data synchronization
               `,
               resources: [
-                "Bitcoin Protocol Documentation",
-                "Mining Algorithm Deep Dive",
-                "Transaction Structure Guide"
+                "Bitcoin P2P Network Protocol",
+                "Full Node Implementation Guide",
+                "SPV Node Security Considerations"
+              ]
+            },
+            {
+              title: "Mining and Consensus",
+              content: `
+# Bitcoin Mining and Consensus
+
+## Mining Process
+
+### 1. Block Template Creation
+\`\`\`
+BlockHeader {
+    version: 0x20000000,
+    prevBlockHash: "...",
+    merkleRoot: "...",
+    timestamp: 1650000000,
+    bits: 386863986,
+    nonce: 0
+}
+\`\`\`
+
+### 2. Mining Algorithm
+- SHA-256d implementation
+- Nonce iteration
+- Extra nonce handling
+- Version rolling
+- ASICs optimization
+
+### 3. Stratum Protocol
+- Pool communication
+- Work distribution
+- Share submission
+- Payment calculation
+
+## Difficulty Adjustment
+
+### 1. Retargeting Algorithm
+\`\`\`python
+new_target = current_target * (actual_timespan / expected_timespan)
+if actual_timespan < expected_timespan / 4:
+    actual_timespan = expected_timespan / 4
+if actual_timespan > expected_timespan * 4:
+    actual_timespan = expected_timespan * 4
+\`\`\`
+
+### 2. Block Time Targeting
+- 2016 block adjustment period
+- 10-minute target spacing
+- Difficulty bounds
+- Hash rate implications
+
+## Mining Economics
+
+### 1. Reward Structure
+- Block subsidy calculation
+- Transaction fee market
+- Halving schedule
+- Long-term sustainability
+
+### 2. Mining Hardware
+- ASIC evolution
+- Efficiency metrics
+- Power consumption
+- Heat management
+
+### 3. Pool Operations
+- Payout methods (PPLNS, PPS)
+- Fee structures
+- Variance reduction
+- Decentralization concerns
+              `,
+              resources: [
+                "Bitcoin Mining Equipment Guide",
+                "Pool Operation Mechanics",
+                "Mining Profitability Analysis"
+              ]
+            }
+          ]
+        },
+        {
+          title: "Bitcoin Economics",
+          lessons: [
+            {
+              title: "Monetary Policy",
+              content: `
+# Bitcoin Monetary Policy
+
+## Supply Schedule
+
+### 1. Block Reward
+- Initial 50 BTC reward
+- Halving events every 210,000 blocks
+- Final supply of 21 million
+- Stock-to-flow implications
+
+### 2. Issuance Rate
+\`\`\`
+Current Block Reward = 50 * (1/2)^(floor(block_height/210000))
+\`\`\`
+
+### 3. Scarcity Mechanism
+- Predictable supply curve
+- Deflationary nature
+- Lost coins impact
+- UTXO set growth
+
+## Network Security
+
+### 1. Game Theory
+- Rational actor model
+- Nash equilibrium
+- Attack cost analysis
+- Incentive alignment
+
+### 2. Economic Finality
+- Confirmation depth
+- Reorganization cost
+- Miner revenue security
+- Fee market development
+
+## Market Dynamics
+
+### 1. Price Discovery
+- Exchange mechanisms
+- Arbitrage opportunities
+- Liquidity dynamics
+- Market depth analysis
+
+### 2. Network Value
+- Market capitalization
+- Realized value metrics
+- NVT ratio analysis
+- MVRV implications
+
+### 3. Adoption Metrics
+- Active addresses
+- Transaction volume
+- Fee levels
+- Lightning Network growth
+              `,
+              resources: [
+                "Bitcoin Economics Fundamentals",
+                "Network Metrics Analysis",
+                "Security Economics Research"
               ]
             }
           ]

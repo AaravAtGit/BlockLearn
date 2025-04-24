@@ -37,6 +37,13 @@ const WalletContext = createContext<WalletContextType>({
 
 export const useWalletContext = () => useContext(WalletContext)
 
+// Add Ethereum interface to Window object
+declare global {
+  interface Window {
+    ethereum?: any
+  }
+}
+
 interface WalletProviderProps {
   children: ReactNode
 }
@@ -54,15 +61,23 @@ export function WalletProvider({ children }: WalletProviderProps) {
       if (typeof window === "undefined" || !window.ethereum) return;
       
       try {
-        const provider = new Web3Provider(window.ethereum)
-        const accounts = await provider.listAccounts()
+        // Use direct ethereum provider method instead of ethers.js
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts"
+        }) as string[]
         
         if (accounts && accounts.length > 0) {
+          const provider = new Web3Provider(window.ethereum)
           setProvider(provider)
           setAddress(accounts[0])
           setIsConnected(true)
           
-          const balance = await provider.getBalance(accounts[0])
+          // Get balance directly from ethereum provider
+          const balance = await window.ethereum.request({
+            method: "eth_getBalance",
+            params: [accounts[0], "latest"]
+          }) as string
+          
           setBalance(formatEther(balance))
         }
       } catch (error) {
@@ -92,7 +107,12 @@ export function WalletProvider({ children }: WalletProviderProps) {
           setAddress(accounts[0])
           setIsConnected(true)
           
-          const balance = await provider.getBalance(accounts[0])
+          // Get balance directly from ethereum provider
+          const balance = await window.ethereum.request({
+            method: "eth_getBalance",
+            params: [accounts[0], "latest"]
+          }) as string
+          
           setBalance(formatEther(balance))
         } catch (error) {
           console.error("Error handling account change:", error)
@@ -108,17 +128,24 @@ export function WalletProvider({ children }: WalletProviderProps) {
     window.ethereum.on("chainChanged", handleChainChanged)
 
     return () => {
-      window.ethereum?.removeListener("accountsChanged", handleAccountsChanged)
-      window.ethereum?.removeListener("chainChanged", handleChainChanged)
+      if (window.ethereum?.removeListener) {
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged)
+        window.ethereum.removeListener("chainChanged", handleChainChanged)
+      }
     }
   }, [])
 
   // Function to update balance
   const updateBalance = async (userAddress: string) => {
-    if (!provider) return;
+    if (typeof window === "undefined" || !window.ethereum) return;
     
     try {
-      const balance = await provider.getBalance(userAddress)
+      // Get balance directly from ethereum provider
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [userAddress, "latest"]
+      }) as string
+      
       setBalance(formatEther(balance))
     } catch (error) {
       console.error("Failed to fetch balance:", error)
@@ -155,24 +182,57 @@ export function WalletProvider({ children }: WalletProviderProps) {
   }
 
   const connect = async () => {
-    if (typeof window === "undefined" || !window.ethereum) {
-      alert("Please install a Web3 wallet like MetaMask to connect")
+    // Check if we're in a browser environment
+    if (typeof window === "undefined") {
+      console.error("Not in browser environment")
+      return
+    }
+
+    // More detailed check for ethereum provider
+    if (!window.ethereum) {
+      console.error("No ethereum provider found - do you have MetaMask installed?")
+      alert("Please install MetaMask to connect your wallet")
+      window.open("https://metamask.io/download/", "_blank")
       return
     }
 
     setIsConnecting(true)
+    console.log("Attempting to connect wallet...")
 
     try {
-      // Request account access - using the modern method only
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      }) as string[]
+      console.log("Requesting accounts...")
+      
+      // Use direct ethereum provider methods instead of ethers.js
+      let accounts
+      
+      try {
+        // Main connection method - eth_requestAccounts
+        accounts = await window.ethereum.request({
+          method: "eth_requestAccounts" 
+        }) as string[]
+      } catch (requestError: any) {
+        console.error("First connection attempt failed:", requestError)
+        
+        if (requestError.code === -32002) {
+          throw new Error("MetaMask is already processing a request. Please check your MetaMask extension.")
+        }
+        
+        // Legacy fallback
+        try {
+          accounts = await window.ethereum.enable() as string[]
+        } catch (enableError: any) {
+          console.error("Legacy connection method failed:", enableError)
+          throw enableError
+        }
+      }
+
+      console.log("Received accounts:", accounts)
 
       if (!accounts || accounts.length === 0) {
         throw new Error("No accounts returned from wallet")
       }
 
-      // Initialize provider after we have account access
+      // Create provider after we have account access
       const provider = new Web3Provider(window.ethereum)
       setProvider(provider)
       setAddress(accounts[0])
@@ -180,6 +240,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
       
       // After connecting, try to switch to the Monad network
       try {
+        console.log("Setting up Monad network...")
         await setupMonadNetwork()
       } catch (networkError) {
         console.error("Network setup error:", networkError)
@@ -187,15 +248,18 @@ export function WalletProvider({ children }: WalletProviderProps) {
       }
       
       // Update the user's balance
+      console.log("Updating balance...")
       await updateBalance(accounts[0])
       
     } catch (error: any) {
       console.error("Failed to connect wallet:", error)
       
       if (error.code === 4001) {
-        alert("User rejected the connection request")
+        alert("You rejected the connection request. Please try again and approve the connection in MetaMask.")
       } else {
-        alert(error.message || "Failed to connect wallet. Please try again.")
+        const errorMessage = error.message || "Failed to connect wallet. Please make sure MetaMask is unlocked and try again."
+        console.error("Detailed error:", error)
+        alert(errorMessage)
       }
       
       setIsConnected(false)

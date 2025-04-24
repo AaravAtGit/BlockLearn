@@ -10,7 +10,7 @@ export default function CoursesPage() {
     {
       id: "blockchain-fundamentals",
       title: "Blockchain Fundamentals",
-      description: "Learn the core concepts and technology behind blockchain",
+      description: "Learn the core concepts and technology behind blockchain including distributed ledger technology, cryptography basics, consensus mechanisms, and blockchain architecture.",
       image: "/placeholder.svg?height=200&width=400",
       lessons: 12,
       duration: "4 hours",
@@ -19,9 +19,20 @@ export default function CoursesPage() {
       icon: <BookOpen className="h-8 w-8" />,
     },
     {
+      id: "defi-fundamentals",
+      title: "DeFi Ecosystem",
+      description: "Understand the revolutionary world of Decentralized Finance including AMMs, lending protocols, yield farming, and DeFi security considerations.",
+      image: "/placeholder.svg?height=200&width=400",
+      lessons: 8,
+      duration: "3 hours",
+      level: "Intermediate",
+      category: "defi",
+      icon: <Cpu className="h-8 w-8" />,
+    },
+    {
       id: "bitcoin",
       title: "Bitcoin: Digital Gold",
-      description: "Understand Bitcoin's technology, economics, and impact",
+      description: "Deep dive into Bitcoin's protocol, economics, and mining. Learn about network architecture, consensus mechanisms, and monetary policy.",
       image: "/placeholder.svg?height=200&width=400",
       lessons: 10,
       duration: "3.5 hours",
@@ -30,49 +41,16 @@ export default function CoursesPage() {
       icon: <Bitcoin className="h-8 w-8" />,
     },
     {
-      id: "bitcoin-mining",
-      title: "Bitcoin Mining & Security",
-      description: "Deep dive into Bitcoin's mining process and security model",
-      image: "/placeholder.svg?height=200&width=400",
-      lessons: 8,
-      duration: "3 hours",
-      level: "Advanced",
-      category: "bitcoin",
-      icon: <Bitcoin className="h-8 w-8" />,
-    },
-    {
-      id: "ethereum",
-      title: "Ethereum & Smart Contracts",
-      description: "Master Ethereum, smart contracts, and decentralized applications",
-      image: "/placeholder.svg?height=200&width=400",
-      lessons: 15,
-      duration: "5 hours",
-      level: "Intermediate",
-      category: "ethereum",
-      icon: <Cpu className="h-8 w-8" />,
-    },
-    {
       id: "ethereum-development",
       title: "Ethereum Development",
-      description: "Learn to build decentralized applications on Ethereum",
+      description: "Learn to build decentralized applications on Ethereum, master Solidity programming, and integrate Web3 functionality.",
       image: "/placeholder.svg?height=200&width=400",
       lessons: 12,
       duration: "6 hours",
       level: "Advanced",
       category: "ethereum",
       icon: <Cpu className="h-8 w-8" />,
-    },
-    {
-      id: "blockchain-use-cases",
-      title: "Blockchain Use Cases",
-      description: "Explore real-world applications of blockchain technology",
-      image: "/placeholder.svg?height=200&width=400",
-      lessons: 10,
-      duration: "3 hours",
-      level: "Beginner",
-      category: "fundamentals",
-      icon: <BookOpen className="h-8 w-8" />,
-    },
+    }
   ]
 
   return (
@@ -90,6 +68,7 @@ export default function CoursesPage() {
           <TabsTrigger value="fundamentals">Blockchain Fundamentals</TabsTrigger>
           <TabsTrigger value="bitcoin">Bitcoin</TabsTrigger>
           <TabsTrigger value="ethereum">Ethereum</TabsTrigger>
+          <TabsTrigger value="defi">DeFi</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">
@@ -124,6 +103,16 @@ export default function CoursesPage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {courses
               .filter((course) => course.category === "ethereum")
+              .map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="defi">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {courses
+              .filter((course) => course.category === "defi")
               .map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
@@ -169,7 +158,7 @@ export default function CoursesPage() {
               </CardContent>
             </Card>
           </div>
-          <Link href="/courses/blockchain-fundamentals">
+          <Link href={`/courses/${courses[0].id}`}>
             <Button size="lg">Start Learning Path</Button>
           </Link>
         </div>
