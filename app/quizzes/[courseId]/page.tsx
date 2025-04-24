@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Web3Provider } from "@ethersproject/providers"
+import { Contract } from "@ethersproject/contracts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -10,6 +12,29 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, CheckCircle, AlertCircle } from "lucide-react"
 import { useWalletContext } from "@/context/wallet-context"
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+
+interface QuizOption {
+  id: string
+  text: string
+}
+
+interface QuizQuestion {
+  id: number
+  question: string
+  options: QuizOption[]
+  correctAnswer: string
+}
+
+interface Quiz {
+  title: string
+  description: string
+  questions: QuizQuestion[]
+}
+
+interface Quizzes {
+  [key: string]: Quiz
+}
 
 export default function QuizPage({ params }: { params: { courseId: string } }) {
   const router = useRouter()
@@ -19,6 +44,7 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
   const [showResults, setShowResults] = useState(false)
   const [hasPassedQuiz, setHasPassedQuiz] = useState(false)
   const [isClaiming, setIsClaiming] = useState(false)
+  const [showCongrats, setShowCongrats] = useState(false)
 
   // Get quiz data based on course ID
   const quiz = getQuizData(params.courseId)
@@ -49,21 +75,36 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
   const handleClaimNFT = async () => {
     setIsClaiming(true)
     try {
-      // Here you would integrate with your NFT minting contract
-      // For now we'll just simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      alert("NFT claimed successfully!")
-      router.push("/")
+      if (!window.ethereum) {
+        throw new Error("No Web3 provider found")
+      }
+
+      const contractAddress = "0x4C1C9B031B18653724D66396f5C8281366dC328B"
+      const provider = new Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
+      const contract = new Contract(contractAddress, [
+        "function mint() external"
+      ], signer)
+
+      // Call the mint function
+      const tx = await contract.mint()
+      
+      // Wait for the transaction to be mined
+      await tx.wait()
+      
+      // Show congratulations dialog
+      setShowCongrats(true)
     } catch (error) {
-      console.error("Failed to claim NFT:", error)
-      alert("Failed to claim NFT. Please try again.")
+      console.error("Failed to mint NFT:", error)
+      alert("Failed to mint NFT. Please try again.")
     } finally {
       setIsClaiming(false)
     }
   }
 
   const handleFinish = () => {
-    router.push("/rewards")
+    setShowCongrats(false)
+    router.push("/courses")
   }
 
   const currentQuestionData = quiz.questions[currentQuestion]
@@ -93,109 +134,138 @@ export default function QuizPage({ params }: { params: { courseId: string } }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <Link href={`/courses/${params.courseId}`}>
-          <Button variant="outline" size="sm" className="gap-1">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Course
-          </Button>
-        </Link>
-        {!showResults && (
-          <div className="text-sm text-gray-500">
-            Question {currentQuestion + 1} of {quiz.questions.length}
-          </div>
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <Link href={`/courses/${params.courseId}`}>
+            <Button variant="outline" size="sm" className="gap-1">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Course
+            </Button>
+          </Link>
+          {!showResults && (
+            <div className="text-sm text-gray-500">
+              Question {currentQuestion + 1} of {quiz.questions.length}
+            </div>
+          )}
+        </div>
+
+        {!showResults ? (
+          <Card className="mx-auto max-w-3xl">
+            <CardHeader>
+              <CardTitle>{quiz.title}</CardTitle>
+              <CardDescription>{quiz.description}</CardDescription>
+              <Progress value={progress} className="mt-2 h-2" />
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <h3 className="mb-4 text-xl font-medium">{currentQuestionData.question}</h3>
+                <RadioGroup value={selectedAnswers[currentQuestion] || ""} onValueChange={handleAnswerSelect}>
+                  {currentQuestionData.options.map((option) => (
+                    <div
+                      key={option.id}
+                      className="flex items-center space-x-2 rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <RadioGroupItem value={option.id} id={`option-${option.id}`} />
+                      <Label htmlFor={`option-${option.id}`} className="flex-grow cursor-pointer">
+                        {option.text}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={handleNextQuestion} disabled={!selectedAnswers[currentQuestion]} className="w-full">
+                {currentQuestion < quiz.questions.length - 1 ? "Next Question" : "Submit Quiz"}
+              </Button>
+            </CardFooter>
+          </Card>
+        ) : (
+          <Card className="mx-auto max-w-3xl">
+            <CardHeader>
+              <CardTitle>Quiz Results</CardTitle>
+              <CardDescription>You've completed the {quiz.title}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6 text-center">
+                <div className="mb-4 flex justify-center">
+                  {hasPassedQuiz ? (
+                    <CheckCircle className="h-16 w-16 text-green-500" />
+                  ) : (
+                    <AlertCircle className="h-16 w-16 text-amber-500" />
+                  )}
+                </div>
+                <h3 className="mb-2 text-2xl font-bold">
+                  {selectedAnswers.filter((answer, index) => answer === quiz.questions[index].correctAnswer).length} out
+                  of {quiz.questions.length} correct
+                </h3>
+                <p className="text-gray-500">
+                  {hasPassedQuiz
+                    ? "Congratulations! You've passed the quiz and earned an NFT badge!"
+                    : "You need 70% or higher to pass. Review the material and try again."}
+                </p>
+              </div>
+
+              {hasPassedQuiz && (
+                <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+                  <div className="mb-4 text-center">
+                    <h4 className="text-xl font-medium">Quiz Badge NFT</h4>
+                    <p className="mt-2 text-sm text-gray-500">
+                      Claim your NFT badge to showcase your knowledge achievement
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter>
+              {hasPassedQuiz ? (
+                <Button onClick={handleClaimNFT} className="w-full" disabled={isClaiming}>
+                  {isClaiming ? "Claiming..." : "Claim NFT Badge"}
+                </Button>
+              ) : (
+                <Button onClick={() => router.push(`/courses/${params.courseId}`)} className="w-full">
+                  Review Course Material
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
         )}
       </div>
 
-      {!showResults ? (
-        <Card className="mx-auto max-w-3xl">
-          <CardHeader>
-            <CardTitle>{quiz.title}</CardTitle>
-            <CardDescription>{quiz.description}</CardDescription>
-            <Progress value={progress} className="mt-2 h-2" />
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6">
-              <h3 className="mb-4 text-xl font-medium">{currentQuestionData.question}</h3>
-              <RadioGroup value={selectedAnswers[currentQuestion] || ""} onValueChange={handleAnswerSelect}>
-                {currentQuestionData.options.map((option) => (
-                  <div
-                    key={option.id}
-                    className="flex items-center space-x-2 rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <RadioGroupItem value={option.id} id={`option-${option.id}`} />
-                    <Label htmlFor={`option-${option.id}`} className="flex-grow cursor-pointer">
-                      {option.text}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={handleNextQuestion} disabled={!selectedAnswers[currentQuestion]} className="w-full">
-              {currentQuestion < quiz.questions.length - 1 ? "Next Question" : "Submit Quiz"}
+      <Dialog open={showCongrats} onOpenChange={setShowCongrats}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">Congratulations! 🎉</DialogTitle>
+            <DialogDescription className="text-center">
+              You've successfully claimed your NFT badge!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center">
+            <img
+              src="/certificate.png"
+              alt="Achievement Certificate"
+              className="mb-4 rounded-lg shadow-lg"
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+            <p className="text-center text-sm text-muted-foreground">
+              Your NFT badge has been minted and sent to your wallet.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleFinish} className="w-full">
+              Continue Learning
             </Button>
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className="mx-auto max-w-3xl">
-          <CardHeader>
-            <CardTitle>Quiz Results</CardTitle>
-            <CardDescription>You've completed the {quiz.title}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6 text-center">
-              <div className="mb-4 flex justify-center">
-                {hasPassedQuiz ? (
-                  <CheckCircle className="h-16 w-16 text-green-500" />
-                ) : (
-                  <AlertCircle className="h-16 w-16 text-amber-500" />
-                )}
-              </div>
-              <h3 className="mb-2 text-2xl font-bold">
-                {selectedAnswers.filter((answer, index) => answer === quiz.questions[index].correctAnswer).length} out
-                of {quiz.questions.length} correct
-              </h3>
-              <p className="text-gray-500">
-                {hasPassedQuiz
-                  ? "Congratulations! You've passed the quiz and earned an NFT badge!"
-                  : "You need 70% or higher to pass. Review the material and try again."}
-              </p>
-            </div>
-
-            {hasPassedQuiz && (
-              <div className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
-                <div className="mb-4 text-center">
-                  <h4 className="text-xl font-medium">Quiz Badge NFT</h4>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Claim your NFT badge to showcase your knowledge achievement
-                  </p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-          <CardFooter>
-            {hasPassedQuiz ? (
-              <Button onClick={handleClaimNFT} className="w-full" disabled={isClaiming}>
-                {isClaiming ? "Claiming..." : "Claim NFT Badge"}
-              </Button>
-            ) : (
-              <Button onClick={() => router.push(`/courses/${params.courseId}`)} className="w-full">
-                Review Course Material
-              </Button>
-            )}
-          </CardFooter>
-        </Card>
-      )}
-    </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
-function getQuizData(courseId: string) {
+function getQuizData(courseId: string): Quiz {
   // This would come from a database in a real application
-  const quizzes = {
+  const quizzes: Quizzes = {
     "blockchain-fundamentals": {
       title: "Blockchain Fundamentals Quiz",
       description: "Test your knowledge of blockchain basics",
