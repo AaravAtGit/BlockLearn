@@ -24,8 +24,8 @@ export function Navigation() {
       icon: <BookOpen className="h-5 w-5" />,
     },
     {
-      name: "Quizzes",
-      path: "/quizzes",
+      name: "BlockLearn AI",
+      path: "/blocklearn-ai",
       icon: <BarChart3 className="h-5 w-5" />,
     },
     {
