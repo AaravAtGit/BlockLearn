@@ -27,12 +27,7 @@ export function Navigation() {
       name: "BlockLearn AI",
       path: "/blocklearn-ai",
       icon: <BarChart3 className="h-5 w-5" />,
-    },
-    {
-      name: "Profile",
-      path: "/profile",
-      icon: <User className="h-5 w-5" />,
-    },
+    }
   ]
 
   return (
