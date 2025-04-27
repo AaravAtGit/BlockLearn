@@ -1,100 +1,137 @@
-# BlockLearn - Blockchain Learning Platform
+![github-submission-banner](https://github.com/user-attachments/assets/a1493b84-e4e2-456e-a791-ce35ee2bcf2f)
 
-BlockLearn is an innovative blockchain-based learning platform that combines educational content with Web3 technologies. Learn blockchain concepts, earn rewards, and receive NFT certificates for your achievements.
 
-## 🚀 Features
+# 🚀 BlockLearn: Gamified Blockchain Learning Platform
 
-- **Interactive Learning**: Engage with structured blockchain courses and modules
-- **Web3 Integration**: Connect your wallet and interact with the blockchain
-- **Quiz System**: Test your knowledge with course-specific quizzes
-- **NFT Rewards**: Earn NFT certificates upon course completion
-- **Progress Tracking**: Monitor your learning journey
-- **Responsive Design**: Seamless experience across all devices
+> Learn blockchain while having fun, earn rewards on Monad - making Web3 education fun and rewarding.
+
+---
+
+## 📌 Problem Statement
+
+**Problem Statement 2 – Unleash blockchain gameplay with monad**
+
+---
+
+## 🎯 Objective
+
+BlockLearn solves the challenge of making blockchain education engaging and accessible through gamification. My platform combines interactive learning with Web3 elements on Monad chain, serving both beginners and advanced learners in the blockchain space. Users can earn real rewards while mastering blockchain concepts, making education both fun and rewarding.
+
+---
+
+## 🧠 Team & Approach
+
+### Team Name:  
+`N/A`
+
+### Team Members:  
+- [Aarav (Team Lead / Full Stack Developer)](https://github.com/AaravAtGit)
+
+### Your Approach:  
+- Chose this problem to make blockchain education more engaging
+- Addressed the challenge of user engagement through interactive courses and real rewards
+- Integrated Monad chain for fast, efficient reward distribution
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, TypeScript, TailwindCSS
-- **UI Components**: Shadcn UI
-- **Web3**: Ethereum, Smart Contracts (Solidity)
-- **Authentication**: Web3 Wallet Connection
-- **Styling**: Global CSS with TailwindCSS
+### Core Technologies Used:
+- Frontend: Next.js 14, TypeScript, TailwindCSS
+- UI Components: Shadcn UI
+- Web3: Monad Chain, Smart Contracts (Solidity)
+- Authentication: Web3 Wallet Connection
+- Styling: Global CSS with TailwindCSS
 
-## 📦 Project Structure
+### Sponsor Technologies Used:
+- [✅] **Monad:** Smart contracts for NFT rewards and gameplay mechanics
+- [✅] **Groq:** AI-powered learning assistant for interactive help
 
-```
-app/                  # Next.js app directory
-├── blocklearn-ai/    # AI-powered learning features
-├── courses/          # Course listing and details
-├── learn/           # Learning modules and content
-├── quizzes/         # Interactive quizzes
-└── rewards/         # NFT rewards system
+---
 
-components/          # Reusable React components
-contracts/          # Solidity smart contracts
-context/            # React context providers
-hooks/              # Custom React hooks
-```
+## ✨ Key Features
 
-## 🚀 Getting Started
+- ✅ Interactive Learning Modules
+- ✅ Web3 Wallet Integration for Monad Chain
+- ✅ Quiz System with Reward Mechanics
+- ✅ NFT Certificates on Course Completion
+- ✅ AI-Powered Learning Assistant
 
-1. Clone the repository:
+---
+
+## 📽️ Demo & Deliverables
+
+- **Demo Video Link:** https://youtu.be/L1IAnmyZSMY
+
+---
+
+## ✅ Tasks & Bonus Checklist
+
+- ✅ All members followed social channels
+- ✅ Completed Badge Sharing Task
+- ✅ Signed up for Sprint.dev
+
+---
+
+## 🧪 How to Run the Project
+
+### Requirements:
+- Node.js 18+
+- PNPM package manager
+- Web3 wallet (MetaMask recommended)
+
+### Local Setup:
 ```bash
+# Clone the repository
 git clone https://github.com/AaravAtGit/BlockLearn.git
 cd nextjs_blockLearn
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 pnpm install
-```
 
-3. Set up environment variables:
-```bash
+# Set up environment variables
 cp .env.example .env.local
-```
 
-4. Run the development server:
-```bash
+# Run the development server
 pnpm dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Smart Contract Development:
 
-## 🔧 Smart Contract Development
-
-The project includes a BlockLearnNFT smart contract for issuing completion certificates:
-
-1. Install blockchain development dependencies:
 ```bash
+# Install blockchain dependencies
 pnpm add -D hardhat @nomicfoundation/hardhat-toolbox
-```
 
-2. Compile contracts:
-```bash
+# Compile contracts
 npx hardhat compile
+
+# Deploy contracts
+npx hardhat run scripts/deploy.js --network monad
 ```
 
-3. Deploy contracts:
-```bash
-npx hardhat run scripts/deploy.js --network <network-name>
-```
+---
 
-## 🤝 Contributing
+## 🧬 Future Scope
 
-We welcome contributions! Please follow these steps:
+- 🎮 Enhanced mechanics with more interactive elements
+- 🌟 Expanded reward system with token economics
+- 🤝 Multiplayer learning challenges
+- 📱 Mobile app development
+- 🌐 Multi-chain support beyond Monad
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+## 📎 Resources / Credits
 
 - Built during HackHazards hackathon
-- UI components powered by [shadcn/ui](https://ui.shadcn.com/)
+- UI components: [shadcn/ui](https://ui.shadcn.com/)
 - NextJS App Router for modern React development
+- Monad Chain for blockchain implementation
+
+---
+
+## 🏁 Final Words
+
+BlockLearn represents our vision to revolutionize blockchain education through gamification. The journey through HackHazards has been incredible, allowing me to combine my passion for education with cutting-edge blockchain technology. I'm excited to continue developing and expanding the platform to serve the growing Web3 community.
+
+---
